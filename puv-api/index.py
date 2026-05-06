@@ -57,3 +57,6 @@ async def predict_eta(data: dict):
         # If it still crashes, this will return the actual error message to Flutter
         # which is very helpful for debugging your thesis!
         return {"error": str(e), "status": "failed"}
+    
+from mangum import Mangum
+handler = Mangum(app)
