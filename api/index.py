@@ -30,11 +30,29 @@ async def root():
 # --- 4. PREDICTION ROUTE ---
 @app.post("/predict")
 async def predict_eta(data: dict):
-    # Convert incoming JSON data into a Pandas DataFrame
-    df = pd.DataFrame([data])
-    
-    # Generate prediction from the Random Forest model
-    prediction = model.predict(df)
-    
-    # Return the result as JSON
-    return {"eta_minutes": round(prediction[0], 2)}
+    try:
+        # 1. Define the EXACT order of features used during model training
+        feature_order = [
+            "LTI_Mean", 
+            "Velocity_kmh", 
+            "Rush_Hour", 
+            "Weather", 
+            "Day_Num", 
+            "Time_Encoded"
+        ]
+        
+        # 2. Convert to DataFrame and force the column order
+        # This prevents crashes if Flutter sends the keys in a different order
+        df = pd.DataFrame([data])
+        df = df[feature_order]
+        
+        # 3. Generate prediction
+        prediction = model.predict(df)
+        
+        # 4. Return result
+        return {"eta_minutes": round(prediction[0], 2)}
+        
+    except Exception as e:
+        # If it still crashes, this will return the actual error message to Flutter
+        # which is very helpful for debugging your thesis!
+        return {"error": str(e), "status": "failed"}
