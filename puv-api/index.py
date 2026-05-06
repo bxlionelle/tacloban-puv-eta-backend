@@ -18,7 +18,8 @@ app.add_middleware(
 
 # --- 2. LOAD MODEL ---
 # Pointing to the .pkl file we uploaded to GitHub
-model_path = os.path.join(os.path.dirname(__file__), "..", "tacloban_eta_rfr_model.pkl")
+# ✅ Now both files are in the same folder
+model_path = os.path.join(os.path.dirname(__file__), "tacloban_eta_rfr_model.pkl")
 model = joblib.load(model_path)
 
 # --- 3. ROOT ROUTE ---
